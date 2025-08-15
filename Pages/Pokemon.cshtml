@@ -1,0 +1,131 @@
+@page
+@model RazorPages0.Pages.PokemonModel
+@{
+    ViewData["Title"] = "Pokémon Gallery";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4 text-primary mb-3">🎮 Galería Pokémon</h1>
+    <p class="lead text-muted">Descubre los Pokémon más populares con sus características únicas</p>
+</div>
+
+<div class="row g-4">
+    @foreach (var pokemon in Model.PokemonList)
+    {
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm @pokemon.CardClass" style="border-width: 2px;">
+                <!-- Card Header -->
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 d-flex align-items-center">
+                        <span class="me-2">@pokemon.Emoji</span>
+                        <strong>@pokemon.Name</strong>
+                    </h5>
+                </div>
+                
+                <!-- Card Body -->
+                <div class="card-body text-center">
+                    <!-- Large emoji icon -->
+                    <div class="mb-3">
+                        <span style="font-size: 4rem;">@pokemon.Emoji</span>
+                    </div>
+                    
+                    <!-- Pokemon info -->
+                    <div class="mb-3">
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <span class="badge bg-secondary mb-2">Tipo: @pokemon.Type</span>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">
+                                    <strong>Altura:</strong><br>
+                                    @pokemon.Height
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">
+                                    <strong>Peso:</strong><br>
+                                    @pokemon.Weight
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Popularity bar -->
+                    <div class="mb-3">
+                        <label class="form-label small mb-1"><strong>Popularidad</strong></label>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar @pokemon.ButtonClass.Replace("btn-", "bg-")" 
+                                 role="progressbar" 
+                                 style="width: @pokemon.Popularity%;" 
+                                 aria-valuenow="@pokemon.Popularity" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <small class="text-muted">@pokemon.Popularity%</small>
+                    </div>
+                </div>
+                
+                <!-- Card Footer -->
+                <div class="card-footer bg-light">
+                    <button type="button" class="btn @pokemon.ButtonClass w-100">
+                        <i class="me-1">@pokemon.Emoji</i>
+                        Ver detalles de @pokemon.Name
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Statistics Section -->
+<div class="mt-5 p-4 bg-light rounded">
+    <h3 class="text-center mb-4">📊 Estadísticas Generales</h3>
+    <div class="row text-center">
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-0 bg-warning text-dark">
+                <div class="card-body">
+                    <h2 class="card-title">@Model.PokemonList.Count</h2>
+                    <p class="card-text mb-0">Pokémon Totales</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-0 bg-success text-white">
+                <div class="card-body">
+                    <h2 class="card-title">@Model.PokemonList.Select(p => p.Type.Split('/').Length).Sum()</h2>
+                    <p class="card-text mb-0">Tipos Únicos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-0 bg-primary text-white">
+                <div class="card-body">
+                    <h2 class="card-title">@Math.Round(Model.PokemonList.Average(p => p.Popularity), 1)%</h2>
+                    <p class="card-text mb-0">Popularidad Media</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-0 bg-info text-white">
+                <div class="card-body">
+                    <h2 class="card-title">@Model.PokemonList.OrderByDescending(p => p.Popularity).First().Name</h2>
+                    <p class="card-text mb-0">Más Popular</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fun facts section -->
+<div class="mt-4 text-center">
+    <div class="alert alert-info">
+        <h5>🎯 ¿Sabías qué?</h5>
+        <p class="mb-0">
+            El Pokémon más pesado de nuestra galería es <strong>@Model.PokemonList.OrderByDescending(p => double.Parse(p.Weight.Split(' ')[0])).First().Name</strong> 
+            con @Model.PokemonList.OrderByDescending(p => double.Parse(p.Weight.Split(' ')[0])).First().Weight, 
+            mientras que el más liviano es <strong>@Model.PokemonList.OrderBy(p => double.Parse(p.Weight.Split(' ')[0])).First().Name</strong> 
+            con @Model.PokemonList.OrderBy(p => double.Parse(p.Weight.Split(' ')[0])).First().Weight.
+        </p>
+    </div>
+</div>
